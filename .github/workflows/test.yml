@@ -1,4 +1,4 @@
-name: Run Jest tests
+name: Run Jest tests with coverage
 
 on:
   push:
@@ -19,8 +19,14 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test
+      - name: Run Jest tests with coverage
+        run: npm test -- --coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
