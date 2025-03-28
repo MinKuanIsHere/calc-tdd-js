@@ -1,1 +1,35 @@
+# Node modules
 node_modules/
+
+# Test coverage reports
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+
+# Mac system files
+*.DS_Store
+
+# Optional npm cache directory
+.npm/
+
+# Jest cache
+jest-cache/

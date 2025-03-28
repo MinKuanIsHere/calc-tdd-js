@@ -1,104 +1,162 @@
-# Calc TDD 開發專案
-- Software Testing Homework 2
-- 學號: 313552009
-- 姓名: 陳旻寬
-- 本專案目標為：
-    1. 使用 Test-Driven Development (TDD) 逐步開發四則運算計算機功能
-    2. 每個新功能皆由測試驅動設計，包含支援浮點數運算、錯誤處理與輸入驗證
-    3. 建立自動化測試與覆蓋率報告（coverage）
-    4. 整合 GitHub Actions 與 GitLab CI 進行驗證與版本控管
+# Calc TDD Report
+
+- Software Testing – Homework 2
+- Author: 陳旻寬（Master Student, NYCU）
+- Student ID: 313552009
+
+- This report documents the step-by-step development of a calculator program using **Test-Driven Development (TDD)**, written in **JavaScript (Node.js)**. 
+- The version supports four arithmetic operations on floating-point numbers, with complete input validation and 100% test coverage using Jest.
 
 ---
 
-## 功能規格與限制
+## Development Environment
 
-| 功能        | 說明 |
-|-------------|------|
-| `add(a, b)`      | 回傳 a + b（使用浮點數） |
-| `subtract(a, b)` | 回傳 a - b |
-| `multiply(a, b)` | 回傳 a × b |
-| `divide(a, b)`   | 回傳 a ÷ b，若 b = 0 則拋出錯誤 |
-| 錯誤處理         | 若 a 或 b 非數字（number），或為 NaN，則拋出錯誤 |
-| 覆蓋率報告       | 使用 Jest coverage，預期達到 100% |
+- Node.js v18+
+- npm (Node Package Manager)
+- Git (for version control)
 
 ---
 
-## 開發流程（TDD 記錄）
+## Quick Start
 
-### 1️⃣ add(a, b)
-- 撰寫測試：期望 1.2 + 3.4 = 4.6
-- 初始失敗（紅燈）
-- 新增 `add()` 函式 → 測試通過（綠燈）
+```bash
+# Clone the repository
+git clone https://github.com/MinKuanIsHere/calc-tdd-js.git
+cd calc-tdd-js
 
-### 2️⃣ subtract(a, b)
-- 撰寫測試，包含負數與 0 減法
-- 新增函式後通過所有測試
+# Install dependencies
+npm install
 
-### 3️⃣ multiply(a, b)
-- 測試乘法包含正負數、乘 0 等情境
-- 所有 case 綠燈通過
+# Run all tests
+npm test
 
-### 4️⃣ divide(a, b)
-- 撰寫除法與除以 0 的錯誤處理測試
-- 新增 `divide()` 並檢查除以 0 拋出錯誤
+# Run tests with coverage report
+npm test -- --coverage
+```
 
-### 5️⃣ 輸入驗證（全函式共通）
-- 測試 `add('abc', 2)`、`multiply(NaN, 5)` 等不合法輸入
-- 封裝 `validateInput()` 檢查非 number 或 NaN
-- 所有測試通過
+> To open the HTML coverage report:
+> - On macOS/Linux: `open coverage/lcov-report/index.html`
+> - On Windows/WSL: `explorer.exe coverage/lcov-report/index.html`
 
 ---
 
-## 自動化測試與 Coverage
+## Calculator Specification
 
-### GitHub Actions（CI）
+| Function        | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| `add(a, b)`      | Returns the sum of two numbers                                              |
+| `subtract(a, b)` | Returns the difference between a and b                                      |
+| `multiply(a, b)` | Returns the product of two numbers                                           |
+| `divide(a, b)`   | Returns the quotient of a and b. Throws an error when `b == 0`              |
 
-- 每次 `push` 或 PR，會執行 `npm test -- --coverage`
-- 所有測試自動執行，CI 顯示綠燈
-- 可手動檢查 coverage HTML 報告
+### Input Requirements
+
+- Inputs must be of type **number** (floats or integers)
+- If either input is `NaN`, a non-number (e.g., string, null), an error will be thrown:
+  ```
+  Error: Invalid input: both arguments must be numbers
+  ```
 
 ---
 
-## 專案結構說明
+## TDD Development Process
+
+TDD is a software development practice that follows this cycle:
+
+```
+1. Write a failing test
+2. Write the simplest code to pass the test
+3. Refactor while keeping tests green
+```
+
+Below is a summary of how each function was developed using TDD:
+
+### 1️⃣ `add(a, b)`
+
+- Wrote initial tests:
+  - `add(1.2, 3.4) → 4.6`
+  - `add(-1, -2.5) → -3.5`
+- Initial test failed (method not implemented)
+- Implemented `add()` method → All tests passed
+
+### 2️⃣ `subtract(a, b)`
+
+- Designed test cases:
+  - `subtract(5.5, 2) → 3.5`
+  - `subtract(-3, -2) → -1`
+- Implemented `subtract()` method → All tests passed
+
+### 3️⃣ `multiply(a, b)`
+
+- Designed test cases:
+  - `multiply(3, 2) → 6`
+  - `multiply(-1.5, 2) → -3`
+  - `multiply(0, 5) → 0`
+- Implemented `multiply()` method → Passed all cases
+
+### 4️⃣ `divide(a, b)`
+
+- Designed tests for:
+  - `divide(6, 3) → 2`
+  - `divide(-9, 3) → -3`
+  - `divide(1, 0)` should throw error
+- Implemented `divide()` method with division-by-zero check
+
+### 5️⃣ Input Validation for All Methods
+
+- Created shared helper: `validateInput(a, b)`
+- Wrote tests to catch errors for:
+  - `add("abc", 2)`
+  - `multiply(null, 5)`
+  - `subtract(NaN, 1)`
+- Refactored all four methods to include validation logic
+
+---
+
+## Test Design Summary
+
+Each function is tested with:
+
+| Case Type             | Examples                          |
+|----------------------|-----------------------------------|
+| Basic arithmetic     | Positive, negative, and zero      |
+| Floating-point math  | e.g., `add(1.2, 3.4) → 4.6`       |
+| Error input          | Strings, null, undefined, NaN     |
+| Division safety      | `divide(5, 0)` → throws error     |
+
+---
+
+## Project Structure
 
 ```
 calc-tdd-js/
-├── calc.js                # 主程式 - Calc 類別
-├── calc.test.js           # 測試檔 - 使用 Jest
-├── coverage/              # coverage 報告自動產生
-├── .github/workflows/     # GitHub Actions CI 設定
-│   └── test.yml
-├── .gitlab-ci.yml         # GitLab CI 設定檔
-├── README.md              # 專案說明（本檔案）
-├── calculator_spec.md     # 規格書（可選）
-└── narrative.md           # TDD 過程紀錄（可合併進 README）
+├── calc.js                # Calculator class implementation
+├── calc.test.js           # Jest test suite
+├── coverage/              # Auto-generated test coverage report
+├── node_modules/          # Installed dependencies (excluded from Git)
+├── package.json           # Dependencies and test script
+├── package-lock.json      # Lock file
+├── .github/
+│   └── workflows/
+│       └── test.yml       # GitHub Actions CI config
+└── README.md              # This report
 ```
+
+`node_modules/` is ignored via `.gitignore` and regenerated with `npm install`
 
 ---
 
-## 成果展示
+## Results
 
-- ✅ 所有測試通過（Jest）
-- ✅ 覆蓋率 Coverage 達 100%
-- ✅ 支援 GitHub Actions CI 測試通過
-- ✅ 支援 GitLab CI 自動報告（可選）
-- 📷 測試與報告畫面請見附件截圖
-![alt text](image.png)
+- All test cases passed
+- Test Coverage: 100%
+- GitHub Actions CI: Passes on every push
+- Screenshot of test and coverage output:
+
+![Test and Coverage Screenshot](image.png)
 
 ---
 
-## 執行與測試方式
+## Conclusion
 
-```bash
-# 安裝
-npm install
-
-# 執行測試
-npm test
-
-# 執行測試 + coverage
-npm test -- --coverage
-
-# 開啟 coverage 報告（local）
-open coverage/lcov-report/index.html
-```
+This assignment demonstrates a clean and systematic application of TDD principles. Each feature was driven by failing tests, followed by implementation and refactoring. Input validation was consistently handled, and the project maintains complete test coverage with CI integration.
